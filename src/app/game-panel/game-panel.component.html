@@ -1,0 +1,93 @@
+<section class="game-panel">
+  <div class="player-list">
+    <h1>
+      {{ pointsSum }}
+    </h1>
+    <div>
+      <mat-chip-option *ngFor="let point of points; let i = index">
+        {{ point }}
+        <button matChipRemove (click)="removePoint(i)">x</button>
+      </mat-chip-option>
+    </div>
+    <table
+      mat-table
+      [dataSource]="playerDataSource"
+      matSort
+      class="mat-elevation-z8"
+    >
+      <!-- Position Column -->
+      <ng-container matColumnDef="pos">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          sortActionDescription="Sort by pos"
+        >
+          No.
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.pos }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          sortActionDescription="Sort by name"
+        >
+          Name
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="score">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          sortActionDescription="Sort by score"
+        >
+          Score
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.score }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="playerDataSourceColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: playerDataSourceColumns"
+        [ngClass]="{ active: row.active }"
+      ></tr>
+    </table>
+  </div>
+  <div class="points-selection">
+    <button
+      class="point"
+      [ngClass]="'point-' + v"
+      *ngFor="let v of pointsNumbers"
+      (click)="setPoint(v)"
+    >
+      {{ v }}
+    </button>
+
+    <button class="point-del"><</button>
+    <button class="point-25" (click)="setPoint(25)">25</button>
+    <button class="point-50" (click)="setPoint(50)">50</button>
+
+    <button
+      [ngClass]="{ active: multiplication === 2 }"
+      class="duplicator-double"
+      (click)="setMultiplication(2)"
+    >
+      Double
+    </button>
+    <button
+      [ngClass]="{ active: multiplication === 3 }"
+      class="duplicator-tripple"
+      (click)="setMultiplication(3)"
+    >
+      Tripple
+    </button>
+    <button class="clear">Clear</button>
+  </div>
+</section>
