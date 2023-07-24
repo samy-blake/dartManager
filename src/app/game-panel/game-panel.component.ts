@@ -2,6 +2,7 @@
 // https://stackblitz.com/edit/mat-table-animation?file=app%2Fanimations%2Ftemplate.animations.ts
 
 import {
+  AfterContentInit,
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -21,12 +22,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 interface PlayerDataTable extends PlayerData {
   active: boolean;
 }
+
+export interface Points {
+  value: number;
+  multiplication: number;
+}
 @Component({
   selector: 'app-game-panel',
   templateUrl: './game-panel.component.html',
   styleUrls: ['./game-panel.component.scss'],
 })
-export class GamePanelComponent implements OnDestroy {
+export class GamePanelComponent implements OnDestroy, AfterViewInit {
   private _playerList: Player[] = [];
   private _routeQueryParams$: Subscription | undefined;
 
@@ -36,14 +42,10 @@ export class GamePanelComponent implements OnDestroy {
 
   public playerDataSourceColumns = ['pos', 'name', 'score'];
   public playerDataSource!: MatTableDataSource<PlayerDataTable>;
+  public playerDataList: PlayerDataTable[] = [];
   public multiplication = 1;
-  public points: number[] = [];
-
-  get pointsSum() {
-    return this.points.reduce((a, b) => {
-      return a + b;
-    }, 0);
-  }
+  public points: Points[] = [];
+  public activeId: string = '';
 
   @ViewChild(MatSort)
   sort!: MatSort;
@@ -85,9 +87,13 @@ export class GamePanelComponent implements OnDestroy {
         ...player,
         active: i === 0,
       });
+      if (i === 0) {
+        this.activeId = player.id;
+      }
     }
     this.playerDataSource = new MatTableDataSource(data);
     this.playerDataSource.sort = this.sort;
+    this.playerDataList = data;
   }
 
   // update table data
@@ -107,6 +113,7 @@ export class GamePanelComponent implements OnDestroy {
         : activeIndex + 1;
     this.playerDataSource.data[activeIndex].active = false;
     this.playerDataSource.data[nextIndex].active = true;
+    this.activeId = this.playerDataSource.data[nextIndex].id;
   }
 
   setMultiplication(multiplication: number) {
@@ -121,15 +128,19 @@ export class GamePanelComponent implements OnDestroy {
     if (this.points.length > 3) {
       return;
     }
-    if (this.multiplication > 1) {
-      value *= this.multiplication;
-      this.multiplication = 1;
-    }
-    this.points.push(value);
+    this.points.push({
+      value,
+      multiplication: this.multiplication,
+    });
+    this.multiplication = 1;
   }
 
   public setPointsToActivePlayer(): void {
-    this.setPointToPlayer(this.pointsSum);
+    let pointsSum = 0;
+    for (const point of this.points) {
+      pointsSum += point.value * point.multiplication;
+    }
+    this.setPointToPlayer(pointsSum);
     this.points = [];
   }
 
@@ -165,5 +176,30 @@ export class GamePanelComponent implements OnDestroy {
 
   ngOnDestroy() {
     this._routeQueryParams$?.unsubscribe();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(
+      () =>
+        this.newGame([
+          {
+            id: 'as',
+            name: 'Sören',
+          },
+          {
+            id: 'asasd',
+            name: 'Sören',
+          },
+          {
+            id: 'agfgfs',
+            name: 'Sören',
+          },
+          {
+            id: 'aadsass',
+            name: 'Sören',
+          },
+        ]),
+      1000
+    );
   }
 }

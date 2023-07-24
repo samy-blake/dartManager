@@ -1,11 +1,13 @@
 <section class="game-panel">
   <div class="player-list">
-    <h1>
-      {{ pointsSum }}
-    </h1>
+    <app-player-cards
+      [activeId]="activeId"
+      [points]="points"
+      [playerList]="playerDataList"
+    ></app-player-cards>
     <div>
       <mat-chip-option *ngFor="let point of points; let i = index">
-        {{ point }}
+        {{ point.value * point.multiplication }}
         <button matChipRemove (click)="removePoint(i)">x</button>
       </mat-chip-option>
     </div>
@@ -81,14 +83,14 @@
     <button
       class="point-25"
       (click)="setPoint(25)"
-      [disabled]="points.length === 3"
+      [disabled]="points.length === 3 || multiplication !== 1"
     >
       25
     </button>
     <button
       class="point-50"
       (click)="setPoint(50)"
-      [disabled]="points.length === 3"
+      [disabled]="points.length === 3 || multiplication !== 1"
     >
       50
     </button>

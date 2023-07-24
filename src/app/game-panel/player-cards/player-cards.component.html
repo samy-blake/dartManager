@@ -1,0 +1,19 @@
+<section class="player-cards">
+  <div class="card-list">
+    <div
+      class="card"
+      *ngFor="let player of playerList"
+      [ngClass]="{ active: player.id === activeId }"
+    >
+      <div class="points">
+        {{ player.id === activeId ? player.score + pointSum : player.score }}
+      </div>
+      <div class="name">
+        {{ player.name }}
+      </div>
+      <div class="icons">
+        <mat-icon *ngFor="let point of points"> rocket </mat-icon>
+      </div>
+    </div>
+  </div>
+</section>

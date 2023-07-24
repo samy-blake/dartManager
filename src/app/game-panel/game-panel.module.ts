@@ -12,9 +12,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { PlayerCardsComponent } from './player-cards/player-cards.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
-  declarations: [GamePanelComponent, NewGameDialogComponent],
+  declarations: [
+    GamePanelComponent,
+    NewGameDialogComponent,
+    PlayerCardsComponent,
+  ],
   imports: [
     CommonModule,
     GamePanelRoutingModule,
@@ -27,6 +33,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
   ],
 })
 export class GamePanelModule {}
