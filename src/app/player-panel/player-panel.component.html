@@ -1,0 +1,37 @@
+<section class="player-panel">
+  <table
+    mat-table
+    [dataSource]="playerDataSource"
+    matSort
+    class="mat-elevation-z8"
+  >
+    <ng-container matColumnDef="name">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        sortActionDescription="Sort by name"
+      >
+        Name
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="winning">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        sortActionDescription="Sort by Winning"
+      >
+        Score
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.winning }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="playerDataSourceColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: playerDataSourceColumns"></tr>
+  </table>
+</section>

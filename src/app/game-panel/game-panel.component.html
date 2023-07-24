@@ -66,18 +66,38 @@
       [ngClass]="'point-' + v"
       *ngFor="let v of pointsNumbers"
       (click)="setPoint(v)"
+      [disabled]="points.length === 3"
     >
       {{ v }}
     </button>
 
-    <button class="point-del"><</button>
-    <button class="point-25" (click)="setPoint(25)">25</button>
-    <button class="point-50" (click)="setPoint(50)">50</button>
+    <button
+      class="point-ok"
+      [disabled]="points.length < 3"
+      (click)="setPointsToActivePlayer()"
+    >
+      OK
+    </button>
+    <button
+      class="point-25"
+      (click)="setPoint(25)"
+      [disabled]="points.length === 3"
+    >
+      25
+    </button>
+    <button
+      class="point-50"
+      (click)="setPoint(50)"
+      [disabled]="points.length === 3"
+    >
+      50
+    </button>
 
     <button
       [ngClass]="{ active: multiplication === 2 }"
       class="duplicator-double"
       (click)="setMultiplication(2)"
+      [disabled]="points.length === 3"
     >
       Double
     </button>
@@ -85,9 +105,16 @@
       [ngClass]="{ active: multiplication === 3 }"
       class="duplicator-tripple"
       (click)="setMultiplication(3)"
+      [disabled]="points.length === 3"
     >
       Tripple
     </button>
-    <button class="clear">Clear</button>
+    <button
+      [disabled]="points.length === 0"
+      class="clear"
+      (click)="removeLastPoint()"
+    >
+      <
+    </button>
   </div>
 </section>

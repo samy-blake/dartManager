@@ -5,12 +5,18 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Player, PlayerData } from './Player';
+import { MatDialog } from '@angular/material/dialog';
+import { NewGameDialogComponent } from './new-game-dialog/new-game-dialog.component';
+import { PlayerDBData } from '../core/player-data.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface PlayerDataTable extends PlayerData {
   active: boolean;
@@ -20,14 +26,16 @@ interface PlayerDataTable extends PlayerData {
   templateUrl: './game-panel.component.html',
   styleUrls: ['./game-panel.component.scss'],
 })
-export class GamePanelComponent implements OnInit, AfterViewInit {
+export class GamePanelComponent implements OnDestroy {
+  private _playerList: Player[] = [];
+  private _routeQueryParams$: Subscription | undefined;
+
   public pointsNumbers = Array(21)
     .fill(0)
     .map((v: any, i: number) => i);
 
   public playerDataSourceColumns = ['pos', 'name', 'score'];
   public playerDataSource!: MatTableDataSource<PlayerDataTable>;
-  private _playerList: Player[] = [];
   public multiplication = 1;
   public points: number[] = [];
 
@@ -40,28 +48,46 @@ export class GamePanelComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort)
   sort!: MatSort;
 
-  constructor(private changeDetectorRefs: ChangeDetectorRef) {}
+  constructor(
+    private _changeDetectorRefs: ChangeDetectorRef,
+    private _dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this._routeQueryParams$ = route.queryParams.subscribe((params) => {
+      if (params['newGame']) {
+        this.openNewGame();
+        router.navigate([], {
+          queryParams: {
+            newGame: null,
+          },
+          queryParamsHandling: 'merge',
+        });
+      }
+    });
+  }
 
-  private _addPlayer(i: number) {
-    const player = new Player(i.toString(), i, 'Sören', 301);
+  private _addPlayer(pos: number, playerData: PlayerDBData) {
+    const player = new Player(playerData.id, pos, playerData.name, 301);
     this._playerList.push(player);
 
     player.onUpdate.subscribe(this._setUpdateDateOnPlayer.bind(this));
     return player.getJson();
   }
 
-  ngOnInit(): void {
+  newGame(playerData: PlayerDBData[]): void {
     const data = [];
-    for (let i = 0; i < 6; i++) {
-      const player = this._addPlayer(i);
+
+    for (let i = 0; i < playerData.length; i++) {
+      const player = this._addPlayer(i, playerData[i]);
 
       data.push({
         ...player,
         active: i === 0,
       });
     }
-
     this.playerDataSource = new MatTableDataSource(data);
+    this.playerDataSource.sort = this.sort;
   }
 
   // update table data
@@ -69,7 +95,6 @@ export class GamePanelComponent implements OnInit, AfterViewInit {
     const activeIndex = this.playerDataSource.data.findIndex(
       (v) => v.id === value.id
     );
-    console.log(activeIndex);
     this.playerDataSource.data[activeIndex].score = value.score;
   }
 
@@ -93,15 +118,19 @@ export class GamePanelComponent implements OnInit, AfterViewInit {
   }
 
   setPoint(value: number) {
+    if (this.points.length > 3) {
+      return;
+    }
     if (this.multiplication > 1) {
       value *= this.multiplication;
       this.multiplication = 1;
     }
     this.points.push(value);
-    if (this.points.length === 3) {
-      this.setPointToPlayer(this.pointsSum);
-      this.points = [];
-    }
+  }
+
+  public setPointsToActivePlayer(): void {
+    this.setPointToPlayer(this.pointsSum);
+    this.points = [];
   }
 
   setPointToPlayer(value: number) {
@@ -112,7 +141,7 @@ export class GamePanelComponent implements OnInit, AfterViewInit {
 
     if (this._playerList[activePlayerIndex].getScore() - value >= 0) {
       this._playerList[activePlayerIndex].updateScore(value);
-      this.changeDetectorRefs.detectChanges();
+      this._changeDetectorRefs.detectChanges();
     }
     this._setNextActivePlayer();
   }
@@ -121,7 +150,20 @@ export class GamePanelComponent implements OnInit, AfterViewInit {
     this.points.splice(index, 1);
   }
 
-  ngAfterViewInit() {
-    this.playerDataSource.sort = this.sort;
+  removeLastPoint(): void {
+    this.removePoint(this.points.length - 1);
+  }
+
+  openNewGame(): void {
+    const dialogRef = this._dialog.open(NewGameDialogComponent);
+    dialogRef.afterClosed().subscribe((player: PlayerDBData[]) => {
+      if (Array.isArray(player)) {
+        this.newGame(player);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this._routeQueryParams$?.unsubscribe();
   }
 }

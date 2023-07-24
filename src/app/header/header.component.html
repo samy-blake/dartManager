@@ -1,0 +1,10 @@
+<header class="header">
+  <button
+    mat-button
+    [routerLink]="['/game-panel']"
+    [queryParams]="{ newGame: true }"
+  >
+    Neues Spiel
+  </button>
+  <button mat-button [routerLink]="['/player-panel']">Spieler</button>
+</header>

@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
@@ -9,7 +11,7 @@ import { AppServerModule } from './src/main.server';
 import { bootstrapApi } from 'src/api/api.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
-export function app(): express.Express {
+export async function app(): Promise<express.Express> {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/dartManager/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html'))
@@ -27,7 +29,7 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  bootstrapApi(server);
+  await bootstrapApi(server);
   // Example Express Rest API endpoints
   // Serve static files from /browser
   server.get(
@@ -48,11 +50,11 @@ export function app(): express.Express {
   return server;
 }
 
-function run(): void {
+async function run(): Promise<void> {
   const port = process.env['PORT'] || 4000;
 
   // Start up the Node server
-  const server = app();
+  const server = await app();
   server.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });

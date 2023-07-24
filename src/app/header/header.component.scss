@@ -1,0 +1,11 @@
+:host {
+  width: 100%;
+  display: inline-block;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+}

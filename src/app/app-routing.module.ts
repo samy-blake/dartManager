@@ -8,6 +8,13 @@ const routes: Routes = [
       import('./game-panel/game-panel.module').then((m) => m.GamePanelModule),
   },
   {
+    path: 'player-panel',
+    loadChildren: () =>
+      import('./player-panel/player-panel.module').then(
+        (m) => m.PlayerPanelModule
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'game-panel',
   },
