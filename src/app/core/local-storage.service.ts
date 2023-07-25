@@ -11,15 +11,15 @@ export class LocalStorageService {
   constructor() {}
 
   setActivePlayerId(activePlayerId: string) {
-    localStorage.setItem(this._activePlayerId, activePlayerId);
+    localStorage?.setItem(this._activePlayerId, activePlayerId);
   }
   getActivePlayerId(): string {
-    return localStorage.getItem(this._activePlayerId) || '';
+    return localStorage?.getItem(this._activePlayerId) || '';
   }
 
   setActiveGameData(data: Player[]) {
     const jsonData = data.map((v) => v.getJson());
-    localStorage.setItem(this._activeGame, JSON.stringify(jsonData));
+    localStorage?.setItem(this._activeGame, JSON.stringify(jsonData));
   }
 
   getActiveGameData(): PlayerData[] {

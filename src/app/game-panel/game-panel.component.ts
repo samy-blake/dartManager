@@ -1,8 +1,4 @@
-// Animation:
-// https://stackblitz.com/edit/mat-table-animation?file=app%2Fanimations%2Ftemplate.animations.ts
-
 import {
-  AfterContentInit,
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -21,6 +17,10 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlayerCardsComponent } from './player-cards/player-cards.component';
 import { LocalStorageService } from '../core/local-storage.service';
+import {
+  GameWinData,
+  GameWinScreenComponent,
+} from '../game-win-screen/game-win-screen.component';
 
 interface PlayerDataTable extends PlayerData {
   active: boolean;
@@ -62,9 +62,8 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
     private _dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
-    private _localStorage: LocalStorageService
-  ) // private _playerDataService: PlayerDataService
-  {
+    private _localStorage: LocalStorageService // private _playerDataService: PlayerDataService
+  ) {
     this._routeQueryParams$ = route.queryParams.subscribe((params) => {
       if (params['newGame']) {
         this.openNewGame();
@@ -193,7 +192,20 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
   public playerWinCheck() {
     for (const player of this._playerList) {
       if (player.getScore() - this.playerCardsComponent.pointSum === 0) {
-        alert('winning ' + player.getJson().name);
+        const data: GameWinData = {
+          name: player.getJson().name,
+        };
+        const dialog = this._dialog.open(GameWinScreenComponent, {
+          panelClass: 'game-win-screen-panel',
+          maxWidth: '100vw',
+          maxHeight: '100vh',
+          data,
+        });
+        dialog.afterClosed().subscribe((data: boolean) => {
+          if (data) {
+            this.openNewGame();
+          }
+        });
         break;
       }
     }
@@ -267,43 +279,5 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this._restoreGame(player);
       });
     }
-    // setTimeout(
-    //   () =>
-    //     this.newGame([
-    //       {
-    //         id: 'as',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'asasd',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'agfgfs',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'aadsass',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'qweqw',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'hdgdg',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'werew',
-    //         name: 'Sören',
-    //       },
-    //       {
-    //         id: 'vcyvcy',
-    //         name: 'Sören',
-    //       },
-    //     ]),
-    //   1000
-    // );
   }
 }

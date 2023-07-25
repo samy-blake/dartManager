@@ -1,0 +1,42 @@
+<section class="game-win-screen">
+  <div class="background">
+    <div class="confetti">
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+      <div class="confetti-piece"></div>
+    </div>
+  </div>
+  <div class="cup">
+    <ng-lottie
+      [options]="options"
+      width="80vw"
+      (animationCreated)="animationCreated($event)"
+    ></ng-lottie>
+  </div>
+
+  <div class="foreground">
+    <div class="text-animation">
+      <h1>
+        <span
+          *ngFor="let letter of nameStringArray"
+          [style]="'--animation-delay: ' + letter.delay + 'ms'"
+        >
+          {{ letter.letter }}</span
+        >
+      </h1>
+    </div>
+    <div class="actions">
+      <button [mat-dialog-close]="true">Neues Spiel</button>
+    </div>
+  </div>
+</section>
