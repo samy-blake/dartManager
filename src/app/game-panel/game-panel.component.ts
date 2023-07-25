@@ -16,10 +16,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Player, PlayerData } from './Player';
 import { MatDialog } from '@angular/material/dialog';
 import { NewGameDialogComponent } from './new-game-dialog/new-game-dialog.component';
-import { PlayerDBData } from '../core/player-data.service';
+import { PlayerDBData, PlayerDataService } from '../core/player-data.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlayerCardsComponent } from './player-cards/player-cards.component';
+import { LocalStorageService } from '../core/local-storage.service';
 
 interface PlayerDataTable extends PlayerData {
   active: boolean;
@@ -33,7 +34,7 @@ export interface Points {
   templateUrl: './game-panel.component.html',
   styleUrls: ['./game-panel.component.scss'],
 })
-export class GamePanelComponent implements OnDestroy, AfterViewInit {
+export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
   private _playerList: Player[] = [];
   private _routeQueryParams$: Subscription | undefined;
 
@@ -60,8 +61,10 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     private _changeDetectorRefs: ChangeDetectorRef,
     private _dialog: MatDialog,
     private route: ActivatedRoute,
-    private router: Router
-  ) {
+    private router: Router,
+    private _localStorage: LocalStorageService
+  ) // private _playerDataService: PlayerDataService
+  {
     this._routeQueryParams$ = route.queryParams.subscribe((params) => {
       if (params['newGame']) {
         this.openNewGame();
@@ -75,20 +78,58 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     });
   }
 
+  ngOnInit(): void {}
+
   private _addPlayer(pos: number, playerData: PlayerDBData) {
     const player = new Player(playerData.id, pos, playerData.name, 301);
     this._playerList.push(player);
-
     player.onUpdate.subscribe(this._setUpdateDateOnPlayer.bind(this));
     return player.getJson();
   }
 
+  private _setPlayer(playerData: PlayerData) {
+    const player = new Player(
+      playerData.id,
+      playerData.pos,
+      playerData.name,
+      playerData.score
+    );
+    this._playerList.push(player);
+    player.onUpdate.subscribe(this._setUpdateDateOnPlayer.bind(this));
+    return player.getJson();
+  }
+
+  private _restoreGame(playerData: PlayerData[]) {
+    const data = [];
+    this._playerList = [];
+    const activePlayerId = this._localStorage.getActivePlayerId();
+
+    for (let i = 0; i < playerData.length; i++) {
+      const player = this._setPlayer(playerData[i]);
+      const playerDataObj = {
+        ...player,
+        active: false,
+      };
+
+      if (activePlayerId === player.id || (i === 0 && !activePlayerId)) {
+        this.activeId = player.id;
+        this.playerCardsComponent.updateView();
+        playerDataObj.active = true;
+      }
+      data.push(playerDataObj);
+    }
+    this.playerDataSource = new MatTableDataSource(data);
+    this.playerDataSource.sort = this.sort;
+    this.playerDataList = data;
+    this._localStorage.setActiveGameData(this._playerList);
+  }
+
   newGame(playerData: PlayerDBData[]): void {
     const data = [];
+    this._playerList = [];
 
     for (let i = 0; i < playerData.length; i++) {
       const player = this._addPlayer(i, playerData[i]);
-
       data.push({
         ...player,
         active: i === 0,
@@ -101,6 +142,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     this.playerDataSource = new MatTableDataSource(data);
     this.playerDataSource.sort = this.sort;
     this.playerDataList = data;
+    this._localStorage.setActiveGameData(this._playerList);
   }
 
   // update table data
@@ -109,6 +151,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
       (v) => v.id === value.id
     );
     this.playerDataSource.data[activeIndex].score = value.score;
+    this._localStorage.setActiveGameData(this._playerList);
   }
 
   // set next active player
@@ -123,6 +166,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     this.activeId = this.playerDataSource.data[nextIndex].id;
     this.playerCardsComponent.updateView();
     this.updateTableView();
+    this._localStorage.setActivePlayerId(this.activeId);
   }
 
   setMultiplication(multiplication: number) {
@@ -198,7 +242,6 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
   updateTableView() {
     setTimeout(() => {
       const activeEl = this.playerTable.nativeElement.querySelector('.active');
-      console.log(activeEl.offsetTop);
       if (activeEl) {
         const halfHeight = activeEl.getBoundingClientRect().height / 2;
         this.playerTable.nativeElement.scrollTo({
@@ -216,48 +259,51 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     this._routeQueryParams$?.unsubscribe();
   }
 
+  // TODO: remove
   ngAfterViewInit(): void {
-    this.playerTable.nativeElement.addEventListener('scroll', () => {
-      console.log('scroll');
-    });
-
-    setTimeout(
-      () =>
-        this.newGame([
-          {
-            id: 'as',
-            name: 'Sören',
-          },
-          {
-            id: 'asasd',
-            name: 'Sören',
-          },
-          {
-            id: 'agfgfs',
-            name: 'Sören',
-          },
-          {
-            id: 'aadsass',
-            name: 'Sören',
-          },
-          {
-            id: 'qweqw',
-            name: 'Sören',
-          },
-          {
-            id: 'hdgdg',
-            name: 'Sören',
-          },
-          {
-            id: 'werew',
-            name: 'Sören',
-          },
-          {
-            id: 'vcyvcy',
-            name: 'Sören',
-          },
-        ]),
-      1000
-    );
+    const player: PlayerData[] = this._localStorage.getActiveGameData();
+    if (player.length > 0) {
+      setTimeout(() => {
+        this._restoreGame(player);
+      });
+    }
+    // setTimeout(
+    //   () =>
+    //     this.newGame([
+    //       {
+    //         id: 'as',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'asasd',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'agfgfs',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'aadsass',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'qweqw',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'hdgdg',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'werew',
+    //         name: 'Sören',
+    //       },
+    //       {
+    //         id: 'vcyvcy',
+    //         name: 'Sören',
+    //       },
+    //     ]),
+    //   1000
+    // );
   }
 }
