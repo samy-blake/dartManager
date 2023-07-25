@@ -6,10 +6,4 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
-  // constructor(private _dialog: MatDialog) {}
-
-  openPlayerBase(): void {
-    // const dialogRef = this._dialog.open();
-  }
-}
+export class HeaderComponent {}

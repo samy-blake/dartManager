@@ -6,6 +6,7 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -23,7 +24,6 @@ import { PlayerCardsComponent } from './player-cards/player-cards.component';
 interface PlayerDataTable extends PlayerData {
   active: boolean;
 }
-
 export interface Points {
   value: number;
   multiplication: number;
@@ -50,6 +50,8 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
 
   @ViewChild(PlayerCardsComponent)
   playerCardsComponent!: PlayerCardsComponent;
+
+  @ViewChild('playerTable') playerTable!: ElementRef<any>;
 
   @ViewChild(MatSort)
   sort!: MatSort;
@@ -120,6 +122,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     this.playerDataSource.data[nextIndex].active = true;
     this.activeId = this.playerDataSource.data[nextIndex].id;
     this.playerCardsComponent.updateView();
+    this.updateTableView();
   }
 
   setMultiplication(multiplication: number) {
@@ -140,6 +143,16 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     });
     this.playerCardsComponent.updatePointSum();
     this.multiplication = 1;
+    this.playerWinCheck();
+  }
+
+  public playerWinCheck() {
+    for (const player of this._playerList) {
+      if (player.getScore() - this.playerCardsComponent.pointSum === 0) {
+        alert('winning ' + player.getJson().name);
+        break;
+      }
+    }
   }
 
   public setPointsToActivePlayer(): void {
@@ -166,6 +179,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
 
   removePoint(index: number): void {
     this.points.splice(index, 1);
+    this.playerCardsComponent.updatePointSum();
   }
 
   removeLastPoint(): void {
@@ -181,11 +195,32 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     });
   }
 
+  updateTableView() {
+    setTimeout(() => {
+      const activeEl = this.playerTable.nativeElement.querySelector('.active');
+      console.log(activeEl.offsetTop);
+      if (activeEl) {
+        const halfHeight = activeEl.getBoundingClientRect().height / 2;
+        this.playerTable.nativeElement.scrollTo({
+          behavior: 'smooth',
+          top:
+            activeEl.offsetTop +
+            halfHeight -
+            this.playerTable.nativeElement.getBoundingClientRect().height / 2,
+        });
+      }
+    });
+  }
+
   ngOnDestroy() {
     this._routeQueryParams$?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
+    this.playerTable.nativeElement.addEventListener('scroll', () => {
+      console.log('scroll');
+    });
+
     setTimeout(
       () =>
         this.newGame([

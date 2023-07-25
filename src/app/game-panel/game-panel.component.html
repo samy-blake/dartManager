@@ -19,7 +19,7 @@
         {{ point.value }}
       </div>
     </div>
-    <div class="player-table">
+    <div class="player-table" #playerTable>
       <table
         mat-table
         [dataSource]="playerDataSource"
@@ -33,6 +33,7 @@
             *matHeaderCellDef
             mat-sort-header
             sortActionDescription="Sort by pos"
+            style="width: 20px"
           >
             No.
           </th>
@@ -45,6 +46,7 @@
             *matHeaderCellDef
             mat-sort-header
             sortActionDescription="Sort by name"
+            style="width: auto"
           >
             Name
           </th>
@@ -57,6 +59,7 @@
             *matHeaderCellDef
             mat-sort-header
             sortActionDescription="Sort by score"
+            style="width: 30px"
           >
             Score
           </th>
