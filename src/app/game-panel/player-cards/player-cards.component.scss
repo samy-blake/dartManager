@@ -1,0 +1,83 @@
+.player-cards {
+  width: 100%;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 20%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+  }
+  &::before {
+    left: 0;
+
+    background: linear-gradient(
+      90deg,
+      rgba(48, 48, 48, 1) 4%,
+      rgba(0, 212, 255, 0) 100%
+    );
+  }
+  &::after {
+    right: -10px;
+
+    background: linear-gradient(
+      90deg,
+      rgba(0, 212, 255, 0) 0%,
+      rgba(48, 48, 48, 1) 96%
+    );
+  }
+
+  .card-list {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0 30vw;
+  }
+
+  .card {
+    display: inline-block;
+    background-color: var(--primary--color);
+    color: #fff;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    margin: 60px 40px;
+    transform: scale(1);
+    transition: transform 300ms ease-in-out;
+
+    .points {
+      width: 100%;
+      font-style: bold;
+      font-size: 40px;
+      padding-bottom: 20px;
+    }
+
+    .name {
+      padding-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .icons {
+      mat-icon {
+        opacity: 0;
+      }
+
+      &.active {
+        mat-icon {
+          opacity: 0.5;
+
+          &.active {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    &.active {
+      transform: scale(1.2);
+    }
+  }
+}

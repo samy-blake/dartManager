@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { PlayerDBData } from 'src/app/core/player-data.service';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Points } from '../game-panel.component';
 import { PlayerData } from '../Player';
 
@@ -9,28 +8,45 @@ import { PlayerData } from '../Player';
   styleUrls: ['./player-cards.component.scss'],
 })
 export class PlayerCardsComponent {
-  public playerList: PlayerData[] = [];
-
-  @Input() activeId: string = '';
-
   public pointSum: number = 0;
-  points: Points[] = [];
+  public points: Points[] = [];
+
+  @Input() playerList: PlayerData[] = [];
+  @Input() activeId: string = '';
 
   @Input('points')
   set _points(value: Points[]) {
-    if (value.length > 0) {
-      // this.pointSum = value
-      //   .map((v) => v.multiplication * v.value)
-      //   .reduce((v) => v);
+    this.points = value;
+    this.updatePointSum();
+  }
+
+  @ViewChild('playCards') playCards!: ElementRef<any>;
+
+  public updatePointSum() {
+    if (this.points.length > 0) {
+      this.pointSum = this.points
+        .map((v) => v.multiplication * v.value)
+        .reduce((v, v2) => v + v2);
     } else {
       this.pointSum = 0;
     }
-    this.points = value;
-    console.log(this.pointSum);
   }
 
-  @Input('playerList')
-  set _playerList(value: PlayerData[]) {
-    this.playerList = value;
+  public updateView() {
+    setTimeout(() => {
+      const activeEl =
+        this.playCards.nativeElement.querySelector('.card.active');
+      const parent = this.playCards.nativeElement.querySelector('.card-list');
+      if (activeEl && parent) {
+        const halfWidth = activeEl.getBoundingClientRect().width / 2;
+        parent.scrollTo({
+          behavior: 'smooth',
+          left:
+            activeEl.offsetLeft +
+            halfWidth -
+            parent.getBoundingClientRect().width / 2,
+        });
+      }
+    });
   }
 }

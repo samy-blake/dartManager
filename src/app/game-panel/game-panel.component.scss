@@ -1,18 +1,41 @@
 .game-panel {
   width: 100vw;
   max-width: 100%;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 36px);
   display: flex;
 
   .player-list {
     flex: 1 1 auto;
     padding-right: 10px;
+    max-width: 60vw;
+    height: inherit;
+    display: flex;
+    flex-direction: column;
 
     tr {
       &.active {
-        background-color: grey;
+        background-color: var(--primary--color);
       }
     }
+  }
+
+  .player-table {
+    // max-height: 300px;
+    overflow-y: scroll;
+    // tbody { */
+    // }
+  }
+
+  .dart-points {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 70px;
+  }
+  .dart-point {
+    padding: 10px;
+    border: 2px solid #777;
   }
 
   .points-selection {
@@ -27,6 +50,21 @@
 
     button {
       font-size: 2em;
+      background-color: var(--primary--color);
+      color: #fff;
+      border: 0;
+      transition: all 200ms;
+      border: 2px solid var(--secondary--color);
+      border-bottom: 5px solid var(--secondary--color);
+
+      &:disabled {
+        opacity: 0.5;
+      }
+
+      &:active:not(:disabled) {
+        margin-top: 3px;
+        border-bottom: 2px solid var(--secondary--color);
+      }
     }
 
     .point {
@@ -60,7 +98,7 @@
     }
     [class^="duplicator"] {
       &.active {
-        background-color: red;
+        background-color: var(--secondary--color) !important;
       }
     }
     .clear {

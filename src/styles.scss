@@ -2,11 +2,20 @@
 body {
   margin: 0;
   box-sizing: border-box;
+  --primary--color: rgb(2, 70, 91);
+  --secondary--color: rgb(53, 183, 199);
+  --trinary--color: rgb(254, 99, 51);
 }
 
 * {
   box-sizing: inherit;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

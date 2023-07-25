@@ -18,6 +18,7 @@ import { NewGameDialogComponent } from './new-game-dialog/new-game-dialog.compon
 import { PlayerDBData } from '../core/player-data.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PlayerCardsComponent } from './player-cards/player-cards.component';
 
 interface PlayerDataTable extends PlayerData {
   active: boolean;
@@ -46,6 +47,9 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
   public multiplication = 1;
   public points: Points[] = [];
   public activeId: string = '';
+
+  @ViewChild(PlayerCardsComponent)
+  playerCardsComponent!: PlayerCardsComponent;
 
   @ViewChild(MatSort)
   sort!: MatSort;
@@ -89,6 +93,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
       });
       if (i === 0) {
         this.activeId = player.id;
+        this.playerCardsComponent.updateView();
       }
     }
     this.playerDataSource = new MatTableDataSource(data);
@@ -114,6 +119,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
     this.playerDataSource.data[activeIndex].active = false;
     this.playerDataSource.data[nextIndex].active = true;
     this.activeId = this.playerDataSource.data[nextIndex].id;
+    this.playerCardsComponent.updateView();
   }
 
   setMultiplication(multiplication: number) {
@@ -132,6 +138,7 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
       value,
       multiplication: this.multiplication,
     });
+    this.playerCardsComponent.updatePointSum();
     this.multiplication = 1;
   }
 
@@ -196,6 +203,22 @@ export class GamePanelComponent implements OnDestroy, AfterViewInit {
           },
           {
             id: 'aadsass',
+            name: 'Sören',
+          },
+          {
+            id: 'qweqw',
+            name: 'Sören',
+          },
+          {
+            id: 'hdgdg',
+            name: 'Sören',
+          },
+          {
+            id: 'werew',
+            name: 'Sören',
+          },
+          {
+            id: 'vcyvcy',
             name: 'Sören',
           },
         ]),
