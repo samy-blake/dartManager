@@ -14,11 +14,11 @@ playerThrowRoute.post(
     const playerThrowService: PlayerThrowService =
       req.app.get('PlayerThrowService');
 
-    const result = playerThrowService.createPlayerThrow({
+    const result = await playerThrowService.createPlayerThrow({
       gameid: req.body.game,
       playerid: req.body.player,
       multiplyer: req.body.multiplyer,
-      value: req.body.value,
+      value: Number.parseInt(req.body.value),
     });
     res.json(result);
   }

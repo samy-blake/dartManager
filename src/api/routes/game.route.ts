@@ -17,8 +17,8 @@ gameRoute.get('/:id', async (req, res) => {
 });
 
 gameRoute.put(
-  '/',
-  body('winner').notEmpty().escape(),
+  '/:id',
+  body('winner').notEmpty().optional().escape(),
   body('delete').isBoolean().optional().escape(),
   async (req, res) => {
     const id = req.params ? req.params['id'] : 'none';
@@ -27,10 +27,10 @@ gameRoute.put(
     }
     const gameService: GameService = req.app.get('GameService');
 
-    const result = gameService.updateGame(id, {
+    const result = await gameService.updateGame(id, {
       date: new Date(),
       delete: req.body.delete || false,
-      winnerid: req.body.winner,
+      winnerid: req.body.winner || 'none',
     });
     res.json(result);
   }
@@ -39,7 +39,7 @@ gameRoute.put(
 gameRoute.post('/', async (req, res) => {
   const gameService: GameService = req.app.get('GameService');
 
-  const result = gameService.createGame({
+  const result = await gameService.createGame({
     date: new Date(),
     delete: req.body.delete || false,
     winnerid: 'none',

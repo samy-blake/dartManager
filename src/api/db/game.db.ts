@@ -62,13 +62,13 @@ export class GameService {
     const candidate = gameEntitySchema.parse({
       ...dto,
       _id: new ObjectId(),
-      _winnerid: new ObjectId('null'),
+      _winnerid: new ObjectId(),
     });
     const { insertedId } = await this.getGamesCollection().insertOne(candidate);
     return GameDTO.convertFromEntity({
       ...dto,
       _id: insertedId,
-      _winnerid: new ObjectId('null'),
+      _winnerid: new ObjectId(),
     });
   }
 
@@ -76,7 +76,10 @@ export class GameService {
     id: string,
     dto: Omit<Partial<GameDTO>, 'id'>
   ): Promise<GameDTO | null> {
-    const candidate = gameEntitySchema.partial().parse(dto);
+    const candidate = gameEntitySchema.partial().parse({
+      ...dto,
+      _winnerid: new ObjectId(dto.winnerid),
+    });
 
     const { value } = await this.getGamesCollection().findOneAndUpdate(
       { _id: new ObjectId(id) },

@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { GameWinScreenComponent } from './game-win-screen/game-win-screen.component';
 import { HeaderComponent } from './header/header.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 export function playerFactory() {
   return player;
@@ -30,7 +31,16 @@ export function playerFactory() {
     MatDialogModule,
     LottieModule.forRoot({ player: playerFactory }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {
+        duration: 2500,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+      },
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

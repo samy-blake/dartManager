@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Player, PlayerData } from '../game-panel/Player';
+import { GameDBData } from './game-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,23 +18,27 @@ export class LocalStorageService {
     return localStorage?.getItem(this._activePlayerId) || '';
   }
 
-  setActiveGameData(data: Player[]) {
-    const jsonData = data.map((v) => v.getJson());
+  setActiveGameData(game: GameDBData, player: Player[]) {
+    const jsonData = {
+      game,
+      player: player.map((v) => v.getJson()),
+    };
     localStorage?.setItem(this._activeGame, JSON.stringify(jsonData));
   }
 
-  getActiveGameData(): PlayerData[] {
+  getActiveGameData(): { player: PlayerData[]; game: GameDBData } | undefined {
     const stringData = localStorage.getItem(this._activeGame);
     if (!stringData) {
-      return [];
+      return undefined;
     }
     try {
-      const data: PlayerData[] = JSON.parse(stringData);
-      if (!Array.isArray(data)) {
+      const data: { player: PlayerData[]; game: GameDBData } =
+        JSON.parse(stringData);
+      if (!data.player || !Array.isArray(data.player)) {
         throw new Error('no array');
       }
       return data;
     } catch (e) {}
-    return [];
+    return undefined;
   }
 }

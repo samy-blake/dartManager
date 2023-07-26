@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Spielerverwaltung</h1>
+<form (ngSubmit)="submit()" [formGroup]="form">
+  <div mat-dialog-content>
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-icon matSuffix>person</mat-icon>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false" type="button">
+      Schließen
+    </button>
+    <button mat-button type="submit">Spieler speichern</button>
+  </div>
+</form>

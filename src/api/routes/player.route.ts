@@ -27,7 +27,7 @@ playerRoute.put(
     }
     const playerService: PlayerService = req.app.get('PlayerService');
 
-    const result = playerService.updatePlayer(id, {
+    const result = await playerService.updatePlayer(id, {
       name: req.body.name,
       delete: req.body.delete || false,
     });
@@ -40,13 +40,9 @@ playerRoute.post(
   body('name').notEmpty().escape(),
   body('delete').optional().escape(),
   async (req, res) => {
-    const id = req.params ? req.params['id'] : 'none';
-    if (id === 'none') {
-      throw new Error('no id given');
-    }
     const playerService: PlayerService = req.app.get('PlayerService');
 
-    const result = playerService.createPlayer({
+    const result = await playerService.createPlayer({
       name: req.body.name,
       delete: req.body.delete || false,
     });

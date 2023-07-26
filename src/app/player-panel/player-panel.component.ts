@@ -3,6 +3,8 @@ import { PlayerDBData, PlayerDataService } from '../core/player-data.service';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { ManagePlayerComponent } from './manage-player/manage-player.component';
 
 interface PlayerDataTable extends PlayerDBData {
   winning?: number;
@@ -16,7 +18,7 @@ interface PlayerDataTable extends PlayerDBData {
 export class PlayerPanelComponent implements AfterViewInit {
   private _getAllPlayersRequest: Subscription | undefined;
 
-  public playerDataSourceColumns = ['name', 'winning'];
+  public playerDataSourceColumns = ['name', 'winning', 'options'];
   public playerDataSource!: MatTableDataSource<PlayerDataTable>;
 
   public playerDataList: PlayerDBData[] = [];
@@ -24,7 +26,10 @@ export class PlayerPanelComponent implements AfterViewInit {
   @ViewChild(MatSort)
   sort!: MatSort;
 
-  constructor(private _playerData: PlayerDataService) {}
+  constructor(
+    private _playerData: PlayerDataService,
+    private _dialog: MatDialog
+  ) {}
 
   private _getPlayers() {
     this._getAllPlayersRequest?.unsubscribe();
@@ -32,7 +37,7 @@ export class PlayerPanelComponent implements AfterViewInit {
     this._getAllPlayersRequest = this._playerData
       .getAll()
       .subscribe((response: PlayerDBData[]) => {
-        this.playerDataList = response;
+        this.playerDataList = response.filter((v) => v.delete !== true);
         this.playerDataSource = new MatTableDataSource(this.playerDataList);
         this.playerDataSource.sort = this.sort;
       });
@@ -40,5 +45,17 @@ export class PlayerPanelComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this._getPlayers();
+  }
+
+  openManagePlayer(player?: PlayerDBData) {
+    const dialogRef = this._dialog.open(ManagePlayerComponent, {
+      data: player,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this._getPlayers();
+      }
+    });
   }
 }

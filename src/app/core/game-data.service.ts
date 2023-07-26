@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface GameDBData {
   id: string;
   date: string;
-  winner: string; // Todo: set to player data
+  winner: string;
 }
 
 @Injectable({
@@ -19,21 +19,17 @@ export class GameDataService {
   }
 
   public get(id: string): Observable<GameDBData[]> {
-    return this._httpClient.get<GameDBData[]>(`/api/player/${id}`);
+    return this._httpClient.get<GameDBData[]>(`/api/game/${id}`);
   }
 
   public update(
     id: string,
     data: Omit<GameDBData, 'id'>
   ): Observable<GameDBData> {
-    return this._httpClient.put<GameDBData>(`/api/player/${id}`, {
-      data,
-    });
+    return this._httpClient.put<GameDBData>(`/api/game/${id}`, data);
   }
 
   public create(): Observable<GameDBData> {
-    return this._httpClient.post<GameDBData>(`/api/player/`, {
-      data: {},
-    });
+    return this._httpClient.post<GameDBData>(`/api/game/`, {});
   }
 }

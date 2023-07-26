@@ -19,8 +19,6 @@ export class PlayerThrowDataService {
   public create(
     data: Omit<PlayerThrowDBData, 'id'>
   ): Observable<PlayerThrowDBData> {
-    return this._httpClient.post<PlayerThrowDBData>(`/api/player/`, {
-      data,
-    });
+    return this._httpClient.post<PlayerThrowDBData>(`/api/player-throw/`, data);
   }
 }

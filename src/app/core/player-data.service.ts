@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 export interface PlayerDBData {
   id: string;
   name: string;
+  delete?: boolean;
 }
 
 @Injectable({
@@ -25,14 +26,10 @@ export class PlayerDataService {
     id: string,
     data: Omit<PlayerDBData, 'id'>
   ): Observable<PlayerDBData> {
-    return this._httpClient.put<PlayerDBData>(`/api/player/${id}`, {
-      data,
-    });
+    return this._httpClient.put<PlayerDBData>(`/api/player/${id}`, data);
   }
 
   public create(data: Omit<PlayerDBData, 'id'>): Observable<PlayerDBData> {
-    return this._httpClient.post<PlayerDBData>(`/api/player/`, {
-      data,
-    });
+    return this._httpClient.post<PlayerDBData>(`/api/player/`, data);
   }
 }

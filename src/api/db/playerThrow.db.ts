@@ -82,19 +82,19 @@ export class PlayerThrowService {
     });
   }
 
-  async updatePlayerThrow(
-    id: string,
-    dto: Omit<Partial<PlayerThrowDTO>, 'id'>
-  ): Promise<PlayerThrowDTO | null> {
-    const candidate = playerThrowEntitySchema.partial().parse(dto);
+  // async updatePlayerThrow(
+  //   id: string,
+  //   dto: Omit<Partial<PlayerThrowDTO>, 'id'>
+  // ): Promise<PlayerThrowDTO | null> {
+  //   const candidate = playerThrowEntitySchema.partial().parse(dto);
 
-    const { value } = await this.getPlayerThrowsCollection().findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: candidate },
-      { returnDocument: 'after' }
-    );
-    return value ? PlayerThrowDTO.convertFromEntity(value) : null;
-  }
+  //   const { value } = await this.getPlayerThrowsCollection().findOneAndUpdate(
+  //     { _id: new ObjectId(id) },
+  //     { $set: candidate },
+  //     { returnDocument: 'after' }
+  //   );
+  //   return value ? PlayerThrowDTO.convertFromEntity(value) : null;
+  // }
 
   async deletePlayerThrow(id: string): Promise<void> {
     await this.getPlayerThrowsCollection().deleteOne({

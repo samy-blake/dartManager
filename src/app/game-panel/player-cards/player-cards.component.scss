@@ -35,6 +35,11 @@
     overflow-x: auto;
     white-space: nowrap;
     padding: 0 30vw;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .card {
