@@ -54,15 +54,17 @@
     transition: transform 300ms ease-in-out;
 
     .points {
+      line-height: 1em;
       width: 100%;
-      font-style: bold;
-      font-size: 40px;
+      font-weight: 100;
+      font-size: 60px;
       padding-bottom: 20px;
     }
 
     .name {
-      padding-bottom: 10px;
-      font-size: 20px;
+      line-height: 1em;
+      padding-bottom: 30px;
+      font-size: 80px;
     }
 
     .icons {
@@ -72,6 +74,10 @@
 
       &.active {
         mat-icon {
+          font-size: 40px;
+          height: 40px;
+          width: 40px;
+
           opacity: 0.5;
 
           &.active {

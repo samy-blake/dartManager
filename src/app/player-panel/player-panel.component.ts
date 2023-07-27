@@ -18,7 +18,8 @@ interface PlayerDataTable extends PlayerDBData {
 export class PlayerPanelComponent implements AfterViewInit {
   private _getAllPlayersRequest: Subscription | undefined;
 
-  public playerDataSourceColumns = ['name', 'winning', 'options'];
+  // public playerDataSourceColumns = ['name', 'winning', 'options'];
+  public playerDataSourceColumns = ['name', 'options'];
   public playerDataSource!: MatTableDataSource<PlayerDataTable>;
 
   public playerDataList: PlayerDBData[] = [];

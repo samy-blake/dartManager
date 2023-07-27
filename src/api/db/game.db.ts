@@ -97,4 +97,19 @@ export class GameService {
     });
     // await this.getGamesCollection().deleteOne({ _id: new ObjectId(id) });
   }
+
+  async getWinningFromPlayer(playerid: string): Promise<any> {
+    const dbResult = await this.getGamesCollection().aggregate([
+      {
+        $match: {
+          _winnerid: new ObjectId(playerid),
+        },
+      },
+      {
+        $group: {
+          _id: '$_winnerid',
+        },
+      },
+    ]);
+  }
 }

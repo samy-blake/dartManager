@@ -208,33 +208,31 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public playerWinCheck() {
-    for (const player of this._playerList) {
-      if (player.getScore() - this.playerCardsComponent.pointSum === 0) {
-        const playerData = player.getJson();
-        const data: GameWinData = {
-          name: playerData.name,
-        };
-        const dialog = this._dialog.open(GameWinScreenComponent, {
-          panelClass: 'game-win-screen-panel',
-          maxWidth: '100vw',
-          maxHeight: '100vh',
-          data,
+    const player = this._getActivePlayer();
+    if (player.getScore() - this.playerCardsComponent.pointSum === 0) {
+      const playerData = player.getJson();
+      const data: GameWinData = {
+        name: playerData.name,
+      };
+      const dialog = this._dialog.open(GameWinScreenComponent, {
+        panelClass: 'game-win-screen-panel',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        data,
+      });
+      this._gameDataService
+        .update(this._activeGame.id, {
+          winner: playerData.id,
+          date: '',
+        })
+        .subscribe({
+          error: () => this._snackBar.open('Speicher Fehler :('),
         });
-        this._gameDataService
-          .update(this._activeGame.id, {
-            winner: playerData.id,
-            date: '',
-          })
-          .subscribe({
-            error: () => this._snackBar.open('Speicher Fehler :('),
-          });
-        dialog.afterClosed().subscribe((data: boolean) => {
-          if (data) {
-            this.openNewGame();
-          }
-        });
-        break;
-      }
+      dialog.afterClosed().subscribe((data: boolean) => {
+        if (data) {
+          this.openNewGame();
+        }
+      });
     }
   }
 
@@ -257,6 +255,14 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return 'tripple';
     }
     return 'single';
+  }
+
+  private _getActivePlayer(): Player {
+    const activeIndex = this.playerDataSource.data.findIndex((v) => v.active);
+    const activePlayerIndex = this._playerList.findIndex(
+      (v) => v.ID === this.playerDataSource.data[activeIndex].id
+    );
+    return this._playerList[activePlayerIndex];
   }
 
   setPointToPlayer(value: number, points: Points[]) {

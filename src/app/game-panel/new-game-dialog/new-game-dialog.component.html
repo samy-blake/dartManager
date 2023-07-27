@@ -1,17 +1,22 @@
 <h1 mat-dialog-title>Neues Spiel erstellen</h1>
-<div mat-dialog-content>
-  Spielerauswahl
-  <mat-chip-listbox
-    aria-label="Fish selection"
-    [multiple]="true"
-    (change)="updateSelectedPlayer($event)"
-  >
-    <mat-chip-option *ngFor="let player of playerList" [value]="player">
-      {{ player.name }}
-    </mat-chip-option>
-  </mat-chip-listbox>
-</div>
-<div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="false">Schließen</button>
-  <button mat-button [mat-dialog-close]="selectedPlayer">Spiel starten</button>
-</div>
+<form (ngSubmit)="submit()" [formGroup]="form">
+  <div mat-dialog-content class="content">
+    Spielerauswahl
+    <mat-chip-listbox
+      aria-label="Player selection"
+      [multiple]="true"
+      formControlName="player"
+    >
+      <!-- (change)="updateSelectedPlayer($event)" -->
+      <mat-chip-option *ngFor="let player of playerList" [value]="player">
+        {{ player.name }}
+      </mat-chip-option>
+    </mat-chip-listbox>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false" type="button">
+      Schließen
+    </button>
+    <button mat-button type="submit">Spiel starten</button>
+  </div>
+</form>

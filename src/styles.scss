@@ -11,6 +11,7 @@ body {
 
 * {
   box-sizing: inherit;
+  cursor: none;
 }
 
 html,
@@ -34,4 +35,12 @@ body {
     background-color: transparent;
     box-shadow: none;
   }
+}
+
+.mat-mdc-standard-chip {
+  --mdc-chip-label-text-size: 30px;
+  --mdc-chip-label-text-line-height: 1.2em;
+}
+.mat-mdc-chip.mat-mdc-standard-chip {
+  --mdc-chip-container-height: 50px;
 }

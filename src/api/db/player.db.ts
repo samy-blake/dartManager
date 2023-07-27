@@ -87,6 +87,5 @@ export class PlayerService {
       ...player,
       delete: true,
     });
-    // await this.getPlayersCollection().deleteOne({ _id: new ObjectId(id) });
   }
 }
