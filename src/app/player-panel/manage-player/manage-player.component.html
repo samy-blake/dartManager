@@ -3,7 +3,12 @@
   <div mat-dialog-content>
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
-      <input matInput formControlName="name" />
+      <input
+        readonly=""
+        matInput
+        formControlName="name"
+        (click)="openKeyBoard()"
+      />
       <mat-icon matSuffix>person</mat-icon>
     </mat-form-field>
   </div>

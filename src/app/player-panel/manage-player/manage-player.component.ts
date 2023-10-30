@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
+import { KeyboardService } from 'src/app/core/keyboard.service';
 import {
   PlayerDBData,
   PlayerDataService,
@@ -24,13 +25,21 @@ export class ManagePlayerComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: PlayerDBData,
     private _playerData: PlayerDataService,
     private _snackBar: MatSnackBar,
-    private _dialogRef: MatDialogRef<ManagePlayerComponent>
+    private _dialogRef: MatDialogRef<ManagePlayerComponent>,
+    private _keyboard: KeyboardService
   ) {}
 
   ngOnInit(): void {
     if (this.data?.name) {
       this.form.get('name')?.setValue(this.data.name);
     }
+  }
+
+  openKeyBoard(): void {
+    const dialogRef = this._keyboard.open(this.data?.name);
+    dialogRef.afterClosed().subscribe((value) => {
+      this.form.get('name')?.setValue(value);
+    });
   }
 
   submit(): void {

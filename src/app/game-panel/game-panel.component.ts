@@ -11,7 +11,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Player, PlayerData } from './Player';
 import { MatDialog } from '@angular/material/dialog';
-import { NewGameDialogComponent } from './new-game-dialog/new-game-dialog.component';
+import {
+  NewGameDialogComponent,
+  NewGameResult,
+} from './new-game-dialog/new-game-dialog.component';
 import { PlayerDBData } from '../core/player-data.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -155,7 +158,7 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
     this._gameDataService.create().subscribe({
       next: (response: GameDBData) => {
         this._activeGame = response;
-        this._snackBar.open('Spiel erstellts');
+        this._snackBar.open('Spiel erstellt');
       },
       error: () =>
         this._snackBar.open('Ein Fehler beim Speichern ist passiert :(.'),
@@ -302,9 +305,9 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
 
   openNewGame(): void {
     const dialogRef = this._dialog.open(NewGameDialogComponent);
-    dialogRef.afterClosed().subscribe((player: PlayerDBData[]) => {
-      if (Array.isArray(player)) {
-        this.newGame(player);
+    dialogRef.afterClosed().subscribe((newGameData: NewGameResult) => {
+      if (Array.isArray(newGameData.player)) {
+        this.newGame(newGameData.player);
       }
     });
   }
@@ -332,6 +335,7 @@ export class GamePanelComponent implements OnInit, OnDestroy, AfterViewInit {
   // TODO: remove
   ngAfterViewInit(): void {
     const data = this._localStorage.getActiveGameData();
+    console.log(data);
     if (data !== undefined) {
       setTimeout(() => {
         this._restoreGame(data.player);

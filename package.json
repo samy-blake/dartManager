@@ -34,6 +34,7 @@
     "ngx-lottie": "^10.0.0",
     "rxjs": "~7.8.0",
     "saslprep": "^1.0.3",
+    "simple-keyboard": "^3.7.22",
     "tslib": "^2.3.0",
     "zod": "^3.21.4",
     "zone.js": "~0.13.0"

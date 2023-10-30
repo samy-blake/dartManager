@@ -1,3 +1,16 @@
+@keyframes gameValueBtnActive {
+  0% {
+    border-bottom: 8px solid var(--secondary--color);
+  }
+  50% {
+    margin-top: 5px;
+    border-bottom: 3px solid var(--secondary--color);
+  }
+  100% {
+    border-bottom: 8px solid var(--secondary--color);
+  }
+}
+
 .game-panel {
   width: 100vw;
   max-width: 100%;
@@ -65,8 +78,7 @@
       }
 
       &:active:not(:disabled) {
-        margin-top: 5px;
-        border-bottom: 3px solid var(--secondary--color);
+        animation: gameValueBtnActive 400ms;
       }
     }
 

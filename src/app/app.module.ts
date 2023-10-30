@@ -14,13 +14,19 @@ import { GameWinScreenComponent } from './game-win-screen/game-win-screen.compon
 import { HeaderComponent } from './header/header.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { KeyboardComponent } from './keyboard/keyboard.component';
 
 export function playerFactory() {
   return player;
 }
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, GameWinScreenComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    GameWinScreenComponent,
+    KeyboardComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
